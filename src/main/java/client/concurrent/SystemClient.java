@@ -2,13 +2,10 @@ package client.concurrent;
 
 import b.ModInitializer;
 import client.audio.SoundEngine;
-import client.network.ServerUtil;
-import client.transform.ClassRedefiner;
 import client.util.HashUtil;
 import client.util.InputCallbacks;
 import client.util.KeyboardState;
 import client.util.ModuleDispatcher;
-import client.util.StaffChecks;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -24,7 +21,6 @@ public class SystemClient {
    private ConfigManager configManager;
    private HashUtil hashUtil;
    private AssetLoader assetLoader;
-   private final boolean flag = false;
 
    public SystemClient() {
       if (INSTANCE == null) {
@@ -48,8 +44,11 @@ public class SystemClient {
       this.assetLoader = new AssetLoader();
       this.keyboardState.update3();
       this.scheduledExecutorService.schedule(() -> this.moduleRegistry.update7(), 3L, TimeUnit.SECONDS);
-      ClassRedefiner.update5();
-      ClassRedefiner.update2();
+      
+      // Отключено для Android (нативный перехватчик не работает)
+      // ClassRedefiner.update5();
+      // ClassRedefiner.update2();
+      
       SoundEngine.getInstance().setFlag3(false);
    }
 
@@ -95,16 +94,18 @@ public class SystemClient {
 
    private void update3() {
       try {
-         ServerUtil.update2();
-         boolean flagx = StaffChecks.check();
-         if (!flagx) {
-            System.exit(1);
-            return;
-         }
+         // Отключены проверки сервера, которые крашат клиент на Android
+         // ServerUtil.update2();
+         // boolean flagx = StaffChecks.check();
+         // if (!flagx) {
+         //    System.exit(1);
+         //    return;
+         // }
 
          this.update();
       } catch (Exception exception) {
-         System.exit(1);
+         // Если что-то падает, не выходим, а пишем в лог
+         exception.printStackTrace();
       }
    }
 }
