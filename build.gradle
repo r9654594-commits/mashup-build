@@ -1,0 +1,49 @@
+plugins {
+    id 'fabric-loom' version '1.9-SNAPSHOT'
+    id 'java'
+}
+
+version = '1.0.0'
+group = 'recovered'
+
+base {
+    archivesName = 'system-liminar-mashup'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+repositories {
+    maven { name = 'Fabric'; url = 'https://maven.fabricmc.net/' }
+    mavenCentral()
+}
+
+dependencies {
+    minecraft 'com.mojang:minecraft:1.21.4'
+    mappings 'net.fabricmc:yarn:1.21.4+build.8:v2'
+    modImplementation 'net.fabricmc:fabric-loader:0.16.10'
+    modImplementation 'net.fabricmc.fabric-api:fabric-api:0.119.4+1.21.4'
+    
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.10'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-common:1.9.10'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.10'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.10'
+    
+    implementation 'org.json:json:20231013'
+    implementation 'org.jetbrains:annotations:24.1.0'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = 'UTF-8'
+    it.options.release = 21
+    it.options.compilerArgs += ['-Xmaxerrs', '10000', '-Xdiags:verbose']
+}
+
+tasks.named('runClient') {
+    jvmArgs '-Dsystemdlc.native=true', '--enable-native-access=ALL-UNNAMED'
+}
